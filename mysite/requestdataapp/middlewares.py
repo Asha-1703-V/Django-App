@@ -39,7 +39,7 @@ class ThrottlingMiddleware(MiddlewareMixin):
     def __init__(self, get_response):
         self.get_response = get_response
         self.request_times = {} # {ip_address: last_request_time}
-        self.throttle_delay = 10 # seconds
+        self.throttle_delay = 1 # seconds
 
     def __call__(self, request):
         ip_address = self.get_client_ip(request)
