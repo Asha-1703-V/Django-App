@@ -1,11 +1,11 @@
 {% extends 'shopapp/base.html' %}
 
 {% block title %}
-  Create Order
+  Создание заказа
 {% endblock %}
 
 {% block body %}
-  <h1>Create a new order</h1>
+  <h1>Создание нового заказа</h1>
   <div>
     <form method="post">
       {% csrf_token %}
@@ -28,12 +28,12 @@
       {{ form.as_p }}
 
       <button type="submit">
-        Create
+        Создать
       </button>
     </form>
   </div>
 
   <div>
-    <a href="{% url 'shopapp:orders_list' %}">Back to orders list</a>
+    <a href="{% url 'shopapp:orders_list' %}">Вернуться к списку заказов</a>
   </div>
 {% endblock %}
