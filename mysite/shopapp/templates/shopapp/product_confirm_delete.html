@@ -1,11 +1,11 @@
 {% extends 'shopapp/base.html' %}
 
 {% block title %}
-  Confirm delete {{ object.name }}
+  Confirm archive {{ object.name }}
 {% endblock %}
 
 {% block body %}
-  <h1>Are you sure you want to delete PP object.name }}?</h1>
+  <h1>Are you sure you want to archive {{ object.name }}?</h1>
   <br>
   <div>
     <a href="{% url 'shopapp:product_details' pk=object.pk %}"
@@ -16,7 +16,7 @@
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Delete</button>
+      <button type="submit">Archive</button>
     </form>
   </div>
 {% endblock %}
