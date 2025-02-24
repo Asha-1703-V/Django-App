@@ -24,6 +24,10 @@
 
             </ul>
           </div>
+          <div>
+            <a href="{% url 'shopapp:order_update' pk=order.pk %}">Update #{{ order.pk }}</a>
+            <a href="{% url 'shopapp:order_delete' pk=order.pk %}">Delete #{{ order.pk }}</a>
+          </div>
 
         </div>
       {% endfor %}

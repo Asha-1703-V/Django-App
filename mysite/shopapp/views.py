@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import GroupForm
+from .forms import GroupForm, OrderForm
 from .models import Product, Order
 
 
@@ -40,15 +40,16 @@ class GroupsListView(View):
 
         return redirect(request.path)
 
-#
 class ProductDetailsView(DetailView):
     template_name = "shopapp/products-details.html"
     model = Product
     context_object_name = "product"
 
+    def get_queryset(self):
+        return Product.objects.filter(archived=False)
+
 class ProductsListView(ListView):
     template_name = "shopapp/products-list.html"
-    # model = Product
     context_object_name = "products"
     queryset = Product.objects.filter(archived=False)
 
@@ -56,7 +57,6 @@ class ProductCreateView(CreateView):
     model = Product
     fields = ("name", "price", "description", "discount")
     success_url = reverse_lazy("shopapp:products_list")
-
 
 class ProductUpdateView(UpdateView):
     model = Product
@@ -86,6 +86,8 @@ class OrdersListView(ListView):
         .select_related("user")
         .prefetch_related("products")
     )
+    template_name = "shopapp/orders_list.html"
+    context_object_name = "orders"
 
 class OrderDetailView(DetailView):
     queryset = (
@@ -93,3 +95,23 @@ class OrderDetailView(DetailView):
         .select_related("user")
         .prefetch_related("products")
     )
+    template_name = "shopapp/order_detail.html"
+    context_object_name = "order"
+
+class OrderCreateView(CreateView):
+    model = Order
+    form_class = OrderForm
+    success_url = reverse_lazy("shopapp:orders_list")
+
+class OrderUpdateView(UpdateView):
+    model = Order
+    form_class = OrderForm
+    template_name_suffix = "_update_form"
+
+    def get_success_url(self):
+        return reverse("shopapp:order_details", kwargs={"pk": self.object.pk})
+
+class OrderDeleteView(DeleteView):
+    model = Order
+    template_name = "shopapp/order_confirm_delete.html"
+    success_url = reverse_lazy("shopapp:orders_list")
