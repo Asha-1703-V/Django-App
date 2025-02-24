@@ -40,7 +40,7 @@ class GroupsListView(View):
 
         return redirect(request.path)
 
-
+#
 class ProductDetailsView(DetailView):
     template_name = "shopapp/products-details.html"
     model = Product
