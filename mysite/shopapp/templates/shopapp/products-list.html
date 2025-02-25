@@ -9,11 +9,12 @@
   {% if products %}
     <div>
     {% for product in products %}
-    <div>
-      <p>Name: {{ product.name }}</p>
-      <p>Price: {{ product.price }}</p>
-      <p>Discount: {% firstof product.discount 'no discount' %}</p>
-    </div>
+      <div>
+        <p><a href="{% url 'shopapp:product_details' pk=product.pk %}"
+        >Name: {{ product.name }}</a></p>
+        <p>Price: {{ product.price }}</p>
+        <p>Discount: {% firstof product.discount 'no discount' %}</p>
+      </div>
     {% endfor %}
 
     </div>
