@@ -120,3 +120,4 @@ class OrderDeleteView(DeleteView):
     model = Order
     template_name = "shopapp/order_confirm_delete.html"
     success_url = reverse_lazy("shopapp:orders_list")
+    #
