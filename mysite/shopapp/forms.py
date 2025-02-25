@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, forms, CheckboxSelectMultiple
 from django.contrib.auth.models import Group
 from .models import Order
 
@@ -11,3 +11,6 @@ class OrderForm(ModelForm):
     class Meta:
         model = Order
         fields = ("delivery_address", "promocode", "user", "products")
+        widgets = {
+            'products': CheckboxSelectMultiple(),
+        }

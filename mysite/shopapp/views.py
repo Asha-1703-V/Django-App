@@ -103,6 +103,11 @@ class OrderCreateView(CreateView):
     form_class = OrderForm
     success_url = reverse_lazy("shopapp:orders_list")
 
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        form.fields['products'].queryset = Product.objects.filter(archived=False)
+        return form
+
 class OrderUpdateView(UpdateView):
     model = Order
     form_class = OrderForm
