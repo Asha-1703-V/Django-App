@@ -9,20 +9,9 @@
   <form method="post">
     {% csrf_token %}
 
-    {% if error %}
-      <p style="color: red">
-        {{ error }}
-      </p>
-    {% endif %}
 
-    <p>
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
-    </p>
-    <p>
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
-    </p>
+
+    {{ form.as_p }}
 
     <button type="submit">Login</button>
   </form>
