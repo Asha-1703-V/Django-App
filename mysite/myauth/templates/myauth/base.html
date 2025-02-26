@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>{% block title %}
 
+    {% if perms.myauth.add_product %}
+    <a href="{% url 'myauth:product-create' %}">Создать продукт</a>
+{% endif %}
     {% endblock %}</title>
 </head>
 <body>
