@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.views import View
+from django.views.generic import TemplateView
 
 
 def login_view(request: HttpRequest) -> HttpResponse:
@@ -51,3 +52,6 @@ def set_session_view(request: HttpRequest) -> HttpResponse:
 def get_session_view(request: HttpRequest) -> HttpResponse:
     value = request.session.get("foobar", "default")
     return HttpResponse(f"Session value: {value!r}")
+
+class AboutMeView(TemplateView):
+    template_name = "myauth/about-me.html"
