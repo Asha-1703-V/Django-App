@@ -17,7 +17,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
     permission_required = ["shopapp.add_product"]
 
     model = Product
-    fields = 'name', 'price', 'description', 'discount'
+    fields = ['name', 'price', 'description', 'discount']
     success_url = reverse_lazy('shopapp:products_list')
 
     def form_valid(self, form):
@@ -28,7 +28,7 @@ class ProductCreateView(PermissionRequiredMixin, CreateView):
 class ProductUpdateView(PermissionRequiredMixin, UpdateView):
     model = Product
     fields = ['name']
-    permission_required = 'myauth.change_product'
+    permission_required = 'shopapp.change_product'
 
     def has_permission(self):
         if self.request.user.is_superuser:

@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <title>{% block title %}
 
-    {% if perms.myauth.add_product %}
-    <a href="{% url 'shopapp:product-create' %}">Создать продукт</a>
-{% endif %}
-    {% endblock %}</title>
+        {% endblock %}</title>
 </head>
 <body>
-{% block body %}
+    {% block body %}
 
-{% endblock %}
+    {% if perms.shopapp.add_product %}
+        <a href="{% url 'shopapp:add_product' %}">Создать продукт</a>
+    {% endif %}
+
+    {% endblock %}
 </body>
 </html>

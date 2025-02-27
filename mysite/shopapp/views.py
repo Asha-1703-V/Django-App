@@ -12,6 +12,11 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from .forms import GroupForm, OrderForm
 from .models import Product, Order
 
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import ProductSerializer
+
 
 class ShopIndexView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -54,6 +59,15 @@ class ProductsListView(ListView):
     template_name = "shopapp/products-list.html"
     context_object_name = "products"
     queryset = Product.objects.filter(archived=False)
+
+
+class ProductCreateView(APIView):
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(created_by=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductCreateView(UserPassesTestMixin, CreateView):
     def test_func(self):
