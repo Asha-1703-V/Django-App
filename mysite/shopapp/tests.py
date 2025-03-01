@@ -2,11 +2,11 @@ from string import ascii_letters
 from random import choices
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.urls import reverse
 
-from shopapp.models import Product
+from shopapp.models import Product, Order
 from shopapp.utils import add_two_numbers
 
 
@@ -96,3 +96,94 @@ class OrdersListViewTestCase(TestCase):
         response = self.client.get(reverse("shopapp:orders_list"))
         self.assertEquals(response.status_code, 302)
         self.assertIn(str(settings.LOGIN_URL), response.url)
+
+
+class ProductsExportViewTestCase(TestCase):
+    fixtures = [
+        'products-fixtures.json'
+    ]
+
+    def test_get_products_view(self):
+        response = self.client.get(
+            reverse("shopapp:products-export"),
+        )
+        self.assertEquals(response.status_code, 200)
+        products = Product.objects.order_by("pk").all()
+        expected_data = [
+            {
+                "pk": product.pk,
+                "name": product.name,
+                "price": str(product.price),
+                "archived": product.archived
+            }
+            for product in products
+        ]
+        products_data = response.json()
+        self.assertEquals(
+            products_data["products"],
+            expected_data,
+        )
+
+class OrderDetailViewTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.user = User.objects.create_user(username="bob_test", password="qwerty")
+        permission = Permission.objects.get(codename="view_order")
+        cls.user.user_permissions.add(permission)
+        cls.order = Order.objects.create(
+            user=cls.user,
+            delivery_address="Test Delivery Address",
+            promocode="TEST"
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.order.delete()
+        cls.user.delete()
+
+    def setUp(self) -> None:
+        self.client.force_login(self.user)
+
+    def test_get_order(self):
+        response = self.client.get(
+            reverse("shopapp:order_details", kwargs={"pk": self.order.pk})
+        )
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_order_and_check_content(self):
+        response = self.client.get(
+            reverse("shopapp:order_details", kwargs={"pk": self.order.pk})
+        )
+        self.assertContains(response, self.order.delivery_address)
+        self.assertContains(response, self.order.promocode)
+
+    def test_order_context(self):
+        response = self.client.get(
+            reverse("shopapp:order_details", kwargs={"pk": self.order.pk})
+        )
+        self.assertEquals(response.context["order"].pk, self.order.pk)
+
+
+class OrdersExportTestCase(TestCase):
+    fixtures = [
+        'orders-fixtures.json',
+    ]
+
+    def setUp(self) -> None:
+        self.client.force_login(User.objects.get(username="admin"))  # Логиним пользователя с правами is_staff
+
+    def test_orders_export(self):
+        response = self.client.get(reverse("shopapp:orders-export"))
+        self.assertEquals(response.status_code, 200)
+
+        expected_data = [
+            {
+                "id": order.pk,
+                "delivery_address": order.delivery_address,
+                "promocode": order.promocode,
+                "user_id": order.user.pk,
+                "product_ids": [product.pk for product in order.products.all()],
+            }
+            for order in Order.objects.select_related("user").prefetch_related("products").all()
+        ]
+        self.assertEquals(response.json()["orders"], expected_data)
