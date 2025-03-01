@@ -12,24 +12,28 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .forms import GroupForm, OrderForm
 from .models import Product, Order
 
-class ProductCreateView(PermissionRequiredMixin, CreateView):
+# class ProductCreateView(PermissionRequiredMixin, CreateView):
+#
+#     permission_required = ["shopapp.add_product"]
+#
+#     model = Product
+#     fields = 'name', 'price', 'description', 'discount'
+#     success_url = reverse_lazy('shopapp:products_list')
+#
+#     def form_valid(self, form):
+#         form.instance.created_by = self.request.user
+#         return super().form_valid(form)
 
-    permission_required = ["shopapp.add_product"]
-
+class ProductCreateView(CreateView):
     model = Product
-    fields = ['name', 'price', 'description', 'discount']
+    fields = 'name', 'price', 'description', 'discount'
     success_url = reverse_lazy('shopapp:products_list')
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        return super().form_valid(form)
-
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = ['name', 'price', 'description', 'discount']
+    fields = 'name', 'price', 'description', 'discount'
     permission_required = 'shopapp.change_product'
 
     def test_func(self):

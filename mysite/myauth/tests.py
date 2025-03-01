@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from django.urls import reverse
 
@@ -15,4 +16,4 @@ class FooBarViewTest(TestCase):
             response.headers['content-type'], 'application/json',
         )
         expected_data = {"foo": "bar", "spam": "eggs"}
-        self.assertEquals(response.content, expected_data)
+        self.assertJSONEqual(response.content, expected_data)
