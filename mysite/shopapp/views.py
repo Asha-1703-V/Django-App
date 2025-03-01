@@ -2,13 +2,44 @@ from timeit import default_timer
 
 from django.contrib.auth.models import Group
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import GroupForm, OrderForm
 from .models import Product, Order
+
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+
+    permission_required = ["shopapp.add_product"]
+
+    model = Product
+    fields = ['name', 'price', 'description', 'discount']
+    success_url = reverse_lazy('shopapp:products_list')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Product
+    fields = ['name', 'price', 'description', 'discount']
+    permission_required = 'shopapp.change_product'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.get_object().created_by == self.request.user
+
+    def get_success_url(self):
+        return reverse(
+            "shopapp:product_details",
+            kwargs={"pk": self.object.pk},
+        )
 
 
 class ShopIndexView(View):
@@ -53,22 +84,6 @@ class ProductsListView(ListView):
     context_object_name = "products"
     queryset = Product.objects.filter(archived=False)
 
-class ProductCreateView(CreateView):
-    model = Product
-    fields = ("name", "price", "description", "discount")
-    success_url = reverse_lazy("shopapp:products_list")
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    fields = ("name", "price", "description", "discount")
-    template_name_suffix = "_update_form"
-
-    def get_success_url(self):
-        return reverse(
-            "shopapp:product_details",
-            kwargs={"pk": self.object.pk},
-        )
-
 class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy("shopapp:products_list")
@@ -80,7 +95,7 @@ class ProductDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class OrdersListView(ListView):
+class OrdersListView(LoginRequiredMixin, ListView):
     queryset = (
         Order.objects
         .select_related("user")
@@ -89,7 +104,8 @@ class OrdersListView(ListView):
     template_name = "shopapp/orders_list.html"
     context_object_name = "orders"
 
-class OrderDetailView(DetailView):
+class OrderDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = "shopapp.view_order"
     queryset = (
         Order.objects
         .select_related("user")
@@ -120,4 +136,3 @@ class OrderDeleteView(DeleteView):
     model = Order
     template_name = "shopapp/order_confirm_delete.html"
     success_url = reverse_lazy("shopapp:orders_list")
-    #
