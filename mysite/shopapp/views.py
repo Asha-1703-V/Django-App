@@ -2,20 +2,44 @@ from timeit import default_timer
 
 from django.contrib.auth.models import Group
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import GroupForm, OrderForm
 from .models import Product, Order
 
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .serializers import ProductSerializer
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+
+    permission_required = ["shopapp.add_product"]
+
+    model = Product
+    fields = ['name', 'price', 'description', 'discount']
+    success_url = reverse_lazy('shopapp:products_list')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Product
+    fields = ['name', 'price', 'description', 'discount']
+    permission_required = 'shopapp.change_product'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.get_object().created_by == self.request.user
+
+    def get_success_url(self):
+        return reverse(
+            "shopapp:product_details",
+            kwargs={"pk": self.object.pk},
+        )
 
 
 class ShopIndexView(View):
@@ -59,35 +83,6 @@ class ProductsListView(ListView):
     template_name = "shopapp/products-list.html"
     context_object_name = "products"
     queryset = Product.objects.filter(archived=False)
-
-
-class ProductCreateView(APIView):
-    def post(self, request):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(created_by=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class ProductCreateView(UserPassesTestMixin, CreateView):
-    def test_func(self):
-        # return self.request.user.groups.filter(name="secret-group").exists()
-        return self.request.user.is_superuser
-
-    model = Product
-    fields = ("name", "price", "description", "discount")
-    success_url = reverse_lazy("shopapp:products_list")
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    fields = ("name", "price", "description", "discount")
-    template_name_suffix = "_update_form"
-
-    def get_success_url(self):
-        return reverse(
-            "shopapp:product_details",
-            kwargs={"pk": self.object.pk},
-        )
 
 class ProductDeleteView(DeleteView):
     model = Product

@@ -9,10 +9,6 @@
 <body>
     {% block body %}
 
-    {% if perms.shopapp.add_product %}
-        <a href="{% url 'shopapp:add_product' %}">Создать продукт</a>
-    {% endif %}
-
     {% endblock %}
 </body>
 </html>

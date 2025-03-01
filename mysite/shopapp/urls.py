@@ -21,5 +21,4 @@ urlpatterns = [
     path("orders/<int:pk>/", OrderDetailView.as_view(), name="order_details"),
     path("orders/<int:pk>/update/", OrderUpdateView.as_view(), name="order_update"),
     path("orders/<int:pk>/delete/", OrderDeleteView.as_view(), name="order_delete"),
-    path('api/products/', ProductCreateView.as_view(), name='product-create-api'),
 ]

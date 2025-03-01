@@ -6,36 +6,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, CreateView, UpdateView
+from django.views.generic import TemplateView, CreateView
 
-from .models import Profile, Product
-
-from django.contrib.auth.mixins import PermissionRequiredMixin
-
-class ProductCreateView(PermissionRequiredMixin, CreateView):
-
-    permission_required = ["shopapp.add_product"]
-
-    model = Product
-    fields = ['name', 'price', 'description', 'discount']
-    success_url = reverse_lazy('shopapp:products_list')
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        return super().form_valid(form)
-
-
-class ProductUpdateView(PermissionRequiredMixin, UpdateView):
-    model = Product
-    fields = ['name']
-    permission_required = 'shopapp.change_product'
-
-    def has_permission(self):
-        if self.request.user.is_superuser:
-            return True
-        elif self.get_object().created_by == self.request.user:
-            return True
-        return False
+from .models import Profile
 
 
 class AboutMeView(TemplateView):
