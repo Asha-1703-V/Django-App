@@ -9,8 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import GroupForm, OrderForm
-from .models import Product, Order
+from .forms import GroupForm, OrderForm, ProductForm
+from .models import Product, Order, ProductImage
 
 class OrdersExportView(UserPassesTestMixin, View):
     def test_func(self):
@@ -44,15 +44,16 @@ class OrdersExportView(UserPassesTestMixin, View):
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = 'name', 'price', 'description', 'discount'
+    fields = 'name', 'price', 'description', 'discount', "preview"
     success_url = reverse_lazy('shopapp:products_list')
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    fields = 'name', 'price', 'description', 'discount'
+    # fields = 'name', 'price', 'description', 'discount', "preview"
     permission_required = 'shopapp.change_product'
+    form_class = ProductForm
 
     def test_func(self):
         return self.request.user.is_superuser or self.get_object().created_by == self.request.user
@@ -62,6 +63,16 @@ class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView
             "shopapp:product_details",
             kwargs={"pk": self.object.pk},
         )
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        for image in form.files.getlist("images"):
+            ProductImage.objects.create(
+                product=self.objects,
+                image=image
+            )
+
+        return response
 
 
 class ShopIndexView(View):
@@ -95,7 +106,8 @@ class GroupsListView(View):
 
 class ProductDetailsView(DetailView):
     template_name = "shopapp/products-details.html"
-    model = Product
+    # model = Product
+    queryset = Product.objects.prefetch_related("images")
     context_object_name = "product"
 
     def get_queryset(self):
