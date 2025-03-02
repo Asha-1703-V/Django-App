@@ -9,7 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .forms import GroupForm, OrderForm, ProductForm
+from .forms import GroupForm, OrderForm
+from .forms import ProductForm
 from .models import Product, Order, ProductImage
 
 class OrdersExportView(UserPassesTestMixin, View):
@@ -69,7 +70,7 @@ class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView
         for image in form.files.getlist("images"):
             ProductImage.objects.create(
                 product=self.objects,
-                image=image
+                image=image,
             )
 
         return response

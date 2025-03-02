@@ -18,14 +18,15 @@
 
     <h3>Images:</h3>
     <div>
-      {% for image in product.images.all %}
+      {% for img in product.images.all %}
         <div>
-          <img src="{{ image.image.url }}" alt="{{ img.image.name }}">
+          <img src="{{ img.image.url }}" alt="{{ img.image.name }}">
           <div>{{ img.description }}</div>
         </div>
       {% empty %}
       <div>No images uploaded yet</div>
       {% endfor %}
+
     </div>
   </div>
   <div>
