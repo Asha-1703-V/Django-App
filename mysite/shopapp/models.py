@@ -36,6 +36,7 @@ class ProductImage(models.Model):
     image = models.ImageField(upload_to=product_images_directory_path)
     description = models.CharField(max_length=200, null=False, blank=True)
 
+
 class Order(models.Model):
     delivery_address = models.TextField(null=True, blank=True)
     promocode = models.CharField(max_length=20, null=False, blank=False)

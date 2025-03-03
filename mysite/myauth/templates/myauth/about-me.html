@@ -4,7 +4,6 @@
   About me
 {% endblock %}
 
-
 {% block body %}
   <h1>User info</h1>
   {% if user.is_authenticated %}
@@ -13,8 +12,21 @@
     <p>First name: {{ user.first_name }}</p>
     <p>Last name: {{ user.last_name }}</p>
     <p>Email: {{ user.email }}</p>
-    <p>Bio: {{ user.profile.bio }}</p>
+    <p>Bio: {{ user_profile.bio }}</p>
   {% else %}
     <h2>User is anonymous</h2>
   {% endif %}
+  <div>
+    {% if user_profile.avatar %}
+      <img src="{{ user_profile.avatar.url }}" alt="Avatar">
+    {% else %}
+      <p>Аватарка не установлена</p>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Обновить аватарку</button>
+    </form>
+  </div>
 {% endblock %}

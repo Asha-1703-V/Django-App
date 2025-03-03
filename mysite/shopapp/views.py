@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import GroupForm, OrderForm
-from .forms import ProductForm
+from .forms import ProductForm, ProductImageFormSet
 from .models import Product, Order, ProductImage
 
 class OrdersExportView(UserPassesTestMixin, View):
@@ -43,37 +43,86 @@ class OrdersExportView(UserPassesTestMixin, View):
 #         form.instance.created_by = self.request.user
 #         return super().form_valid(form)
 
+# class ProductCreateView(CreateView):
+#     model = Product
+#     fields = 'name', 'price', 'description', 'discount', "preview"
+#     success_url = reverse_lazy('shopapp:products_list')
+#
+# from django.contrib.auth.mixins import UserPassesTestMixin
+#
+# class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
+#     model = Product
+#     # fields = 'name', 'price', 'description', 'discount', "preview"
+#     permission_required = 'shopapp.change_product'
+#     form_class = ProductForm
+#
+#     def test_func(self):
+#         return self.request.user.is_superuser or self.get_object().created_by == self.request.user
+#
+#     def get_success_url(self):
+#         return reverse(
+#             "shopapp:product_details",
+#             kwargs={"pk": self.object.pk},
+#         )
+#
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         for image in form.files.getlist("images"):
+#             ProductImage.objects.create(
+#                 product=self.objects,
+#                 image=image,
+#             )
+#
+#         return response
+
 class ProductCreateView(CreateView):
     model = Product
-    fields = 'name', 'price', 'description', 'discount', "preview"
-    success_url = reverse_lazy('shopapp:products_list')
+    form_class = ProductForm
 
-from django.contrib.auth.mixins import UserPassesTestMixin
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['image_formset'] = ProductImageFormSet()
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        # Обработка множественных изображений
+        image_formset = ProductImageFormSet(self.request.POST, self.request.FILES)
+        if image_formset.is_valid():
+            for image_form in image_formset:
+                if image_form.cleaned_data:
+                    ProductImage.objects.create(
+                        product=self.object,
+                        image=image_form.cleaned_data['image']
+                    )
+
+        return redirect(self.success_url)
+
 
 class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    # fields = 'name', 'price', 'description', 'discount', "preview"
-    permission_required = 'shopapp.change_product'
     form_class = ProductForm
 
-    def test_func(self):
-        return self.request.user.is_superuser or self.get_object().created_by == self.request.user
-
-    def get_success_url(self):
-        return reverse(
-            "shopapp:product_details",
-            kwargs={"pk": self.object.pk},
-        )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['image_formset'] = ProductImageFormSet()
+        return context
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        for image in form.files.getlist("images"):
-            ProductImage.objects.create(
-                product=self.objects,
-                image=image,
-            )
+        self.object = form.save()
 
-        return response
+        # Обработка множественных изображений
+        image_formset = ProductImageFormSet(self.request.FILES)
+        if image_formset.is_valid():
+            for image_form in image_formset:
+                if image_form.cleaned_data:
+                    ProductImage.objects.create(
+                        product=self.object,
+                        image=image_form.cleaned_data['image']
+                    )
+
+        return redirect(self.success_url)
 
 
 class ShopIndexView(View):
