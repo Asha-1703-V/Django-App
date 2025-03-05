@@ -13,7 +13,7 @@
         <p>Bio: {{ user_profile.bio }}</p>
     {% endif %}
 
-    {% if request.user.is_staff %}
+    {% if request.user.is_staff or request.user.pk == user.pk %}
         <a href="{% url 'myauth:update_user_avatar' user.pk %}">Обновить аватарку</a>
     {% endif %}
 {% endblock %}

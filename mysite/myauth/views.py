@@ -6,17 +6,19 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView
 
 from django.contrib.auth.models import User
 from .forms import UpdateAvatarForm
-# from .models import Profile
-from .models import UserProfile
-from django.shortcuts import render, redirect
+from .models import Profile
 
+class AboutMeView(UpdateView):
+    model = Profile
+    fields = ('avatar',)
+    success_url = reverse_lazy('about-me')
 
-class AboutMeView(TemplateView):
-    template_name = "myauth/about-me.html"
+    def get_object(self):
+        return self.request.user.profile
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
@@ -25,7 +27,7 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        UserProfile.objects.create(user=self.object)
+        Profile.objects.create(user=self.object)
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password1")
         user = authenticate(
@@ -36,23 +38,22 @@ class RegisterView(CreateView):
         login(request=self.request, user=user)
         return response
 
+@login_required
+def about_me(request):
+    try:
+        user_profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        user_profile = Profile.objects.create(user=request.user)
 
-# def login_view(request: HttpRequest) -> HttpResponse:
-#     if request.method == "GET":
-#         if request.user.is_authenticated:
-#             return redirect('/admin/')
-#
-#         return render(request, 'myauth/login.html')
-#
-#     username = request.POST["username"]
-#     password = request.POST["password"]
-#
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#         login(request, user)
-#         return  redirect("/admin/")
-#
-#     return render(request, "myauth/login.html", {"error": "Invalid login credentails"})
+    if request.method == 'POST':
+        form = UpdateAvatarForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('about_me')
+    else:
+        form = UpdateAvatarForm(instance=user_profile)
+
+    return render(request, 'myauth/about-me.html', {'user_profile': user_profile, 'form': form})
 
 def logout_view(request: HttpRequest):
     logout(request)
@@ -66,7 +67,6 @@ class MyLogoutPage(View):
         logout(request)
         return redirect('myauth:login')
 
-
 @user_passes_test(lambda u: u.is_superuser)
 def set_cookie_view(request: HttpRequest) -> HttpResponse:
     response = HttpResponse('Cookie set')
@@ -76,7 +76,6 @@ def set_cookie_view(request: HttpRequest) -> HttpResponse:
 def get_cookie_view(request: HttpRequest) -> HttpResponse:
     value = request.COOKIES.get("fizz", "default value")
     return HttpResponse(f"Cookie value: {value!r}")
-
 
 @permission_required("myauth.view_profile", raise_exception=True)
 def set_session_view(request: HttpRequest) -> HttpResponse:
@@ -92,19 +91,6 @@ class FooBarView(View):
     def get(self, request: HttpRequest) -> JsonResponse:
         return JsonResponse({"foo": "bar", "spam": "eggs"})
 
-@login_required
-def about_me(request):
-    user_profile = UserProfile.objects.filter(user=request.user).first()
-    if request.method == 'POST':
-        form = UpdateAvatarForm(request.POST, request.FILES, instance=user_profile)
-        if form.is_valid():
-            form.save()
-            return redirect('about_me')
-    else:
-        form = UpdateAvatarForm(instance=user_profile)
-
-    return render(request, 'about_me.html', {'user_profile': user_profile, 'form': form})
-
 def users_list(request):
     User = get_user_model()
     users = User.objects.all()
@@ -112,19 +98,51 @@ def users_list(request):
 
 def user_profile(request, pk):
     user = User.objects.get(pk=pk)
-    user_profile = UserProfile.objects.filter(user=user).first()
+    try:
+        user_profile = Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        user_profile = None
+
     return render(request, 'myauth/user_profile.html', {'user': user, 'user_profile': user_profile})
 
-@user_passes_test(lambda u: u.is_staff)
+@user_passes_test(lambda u: u.is_staff or u.pk == pk)
 def update_user_avatar(request, pk):
     user = User.objects.get(pk=pk)
-    user_profile = UserProfile.objects.filter(user=user).first()
+    try:
+        user_profile = Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        user_profile = None
+
     if request.method == 'POST':
-        form = UpdateAvatarForm(request.POST, request.FILES, instance=user_profile)
-        if form.is_valid():
-            form.save()
-            return redirect('user_profile', pk=pk)
+        if user_profile:
+            form = UpdateAvatarForm(request.POST, request.FILES, instance=user_profile)
+            if form.is_valid():
+                form.save()
+                return redirect('myauth:user_profile', pk=pk)
+        else:
+            return HttpResponse("Профиль не найден")
     else:
-        form = UpdateAvatarForm(instance=user_profile)
+        if user_profile:
+            form = UpdateAvatarForm(instance=user_profile)
+        else:
+            form = None
 
     return render(request, 'myauth/update_user_avatar.html', {'form': form, 'user': user})
+
+class UsersListView(ListView):
+    model = User
+    template_name = 'myauth/users_list.html'
+    context_object_name = 'users'
+
+class UserProfileView(DetailView):
+    model = User
+    template_name = 'myauth/user_profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            user_profile = Profile.objects.get(user=self.object)
+        except Profile.DoesNotExist:
+            user_profile = None
+        context['user_profile'] = user_profile
+        return context

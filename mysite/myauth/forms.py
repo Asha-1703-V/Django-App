@@ -1,7 +1,7 @@
 from django import forms
-from .models import UserProfile
+from .models import Profile
 
 class UpdateAvatarForm(forms.ModelForm):
     class Meta:
-        model = UserProfile
+        model = Profile
         fields = ('avatar',)
