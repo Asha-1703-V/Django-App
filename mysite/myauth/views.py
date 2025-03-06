@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LogoutView
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse, reverse_lazy
@@ -15,10 +15,40 @@ from .models import Profile
 class AboutMeView(UpdateView):
     model = Profile
     fields = ('avatar',)
-    success_url = reverse_lazy('about-me')
+    success_url = reverse_lazy('myauth:about-me')
+    template_name = 'myauth/about-me.html'
 
     def get_object(self):
-        return self.request.user.profile
+        try:
+            return self.request.user.profile
+        except Profile.DoesNotExist:
+            return Profile.objects.create(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        context['user_profile'] = self.get_object()
+        return context
+
+
+class UpdateUserAvatarView(UpdateView):
+    model = Profile
+    fields = ('avatar',)
+    template_name = 'myauth/update_user_avatar.html'
+
+    def get_object(self):
+        user = User.objects.get(pk=self.kwargs['pk'])
+        return user.profile
+
+    def get_success_url(self):
+        return reverse_lazy('myauth:user_profile', kwargs={'pk': self.kwargs['pk']})
+
+    def dispatch(self, request, *args, **kwargs):
+        user = User.objects.get(pk=self.kwargs['pk'])
+        if not (request.user.is_staff or request.user.pk == user.pk):
+            return HttpResponseForbidden("Вы не можете изменять профиль этого пользователя")
+        return super().dispatch(request, *args, **kwargs)
+
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
