@@ -10,12 +10,15 @@ from .views import (
     AboutMeView,
     RegisterView,
     FooBarView,
+    update_user_avatar,
+    UsersListView,
+    UserProfileView,
+    UpdateUserAvatarView,
 )
 
 app_name = "myauth"
 
 urlpatterns = [
-    # path("login/", login_view, name="login")
     path(
         "login/",
         LoginView.as_view(
@@ -24,7 +27,9 @@ urlpatterns = [
         ),
         name="login",
     ),
-    # path("logout/", logout_view, name="logout"),
+    path("users/", UsersListView.as_view(), name="users_list"),
+    path("users/<int:pk>/", UserProfileView.as_view(), name="user_profile"),
+    path("users/<int:pk>/update-avatar/", UpdateUserAvatarView.as_view(), name="update_user_avatar"),
     path("logout/", MyLogoutPage.as_view(), name="logout"),
     path("about-me/", AboutMeView.as_view(), name="about-me"),
     path("register/", RegisterView.as_view(), name="register"),

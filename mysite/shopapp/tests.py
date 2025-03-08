@@ -130,6 +130,7 @@ class OrderDetailViewTestCase(TestCase):
         cls.user = User.objects.create_user(username="bob_test", password="qwerty")
         permission = Permission.objects.get(codename="view_order")
         cls.user.user_permissions.add(permission)
+        cls.user.save()
         cls.order = Order.objects.create(
             user=cls.user,
             delivery_address="Test Delivery Address",
