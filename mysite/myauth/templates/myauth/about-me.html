@@ -12,13 +12,13 @@
     <p>First name: {{ user.first_name }}</p>
     <p>Last name: {{ user.last_name }}</p>
     <p>Email: {{ user.email }}</p>
-    <p>Bio: {{ user_profile.bio }}</p>
+    <p>Bio: {{ request.user.profile.bio }}</p>
   {% else %}
     <h2>User is anonymous</h2>
   {% endif %}
   <div>
-    {% if user_profile.avatar %}
-      <img src="{{ user_profile.avatar.url }}" alt="Avatar">
+    {% if request.user.profile.avatar %}
+      <img src="{{ request.user.profile.avatar.url }}" alt="Avatar">
     {% else %}
       <p>Аватарка не установлена</p>
     {% endif %}

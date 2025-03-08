@@ -19,7 +19,7 @@
         <p>Email: {{ user.email }}</p>
     {% endif %}
 
-    {% if request.user.is_staff or request.user.pk == user.pk %}
-        <a href="{% url 'myauth:update_user_avatar' user.pk %}">Обновить аватарку</a>
+    {% if request.user.is_staff or request.user == user %}
+        <a href="{% url 'myauth:update_user_avatar' user.profile.pk %}">Обновить аватарку</a>
     {% endif %}
 {% endblock %}

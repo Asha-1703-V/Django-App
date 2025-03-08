@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.views import LogoutView
 from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, CreateView, UpdateView, ListView, DetailView
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
 
 from django.contrib.auth.models import User
 from .forms import UpdateAvatarForm
@@ -24,30 +25,19 @@ class AboutMeView(UpdateView):
         except Profile.DoesNotExist:
             return Profile.objects.create(user=self.request.user)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        context['user_profile'] = self.get_object()
-        return context
-
-
-class UpdateUserAvatarView(UpdateView):
+class UpdateUserAvatarView(UserPassesTestMixin, UpdateView):
     model = Profile
     fields = ('avatar',)
     template_name = 'myauth/update_user_avatar.html'
 
-    def get_object(self):
-        user = User.objects.get(pk=self.kwargs['pk'])
-        return user.profile
-
+    # Автоматически получаем профиль через URL (pk)
     def get_success_url(self):
-        return reverse_lazy('myauth:user_profile', kwargs={'pk': self.kwargs['pk']})
+        return reverse('myauth:user_profile', kwargs={'pk': self.object.user.pk})
 
-    def dispatch(self, request, *args, **kwargs):
-        user = User.objects.get(pk=self.kwargs['pk'])
-        if not (request.user.is_staff or request.user.pk == user.pk):
-            return HttpResponseForbidden("Вы не можете изменять профиль этого пользователя")
-        return super().dispatch(request, *args, **kwargs)
+    # Проверка прав: is_staff или владелец профиля
+    def test_func(self):
+        profile = self.get_object()
+        return self.request.user.is_staff or self.request.user == profile.user
 
 
 class RegisterView(CreateView):
