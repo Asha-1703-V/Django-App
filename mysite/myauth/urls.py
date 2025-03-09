@@ -14,6 +14,7 @@ from .views import (
     UsersListView,
     UserProfileView,
     UpdateUserAvatarView,
+    HelloView,
 )
 
 app_name = "myauth"
@@ -27,6 +28,7 @@ urlpatterns = [
         ),
         name="login",
     ),
+    path("hello/", HelloView.as_view(), name="hello"),
     path("users/", UsersListView.as_view(), name="users_list"),
     path("users/<int:pk>/", UserProfileView.as_view(), name="user_profile"),
     path("users/<int:pk>/update-avatar/", UpdateUserAvatarView.as_view(), name="update_user_avatar"),
