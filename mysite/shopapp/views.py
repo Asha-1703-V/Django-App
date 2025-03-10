@@ -100,9 +100,35 @@ class ProductCreateView(CreateView):
         return redirect(self.success_url)
 
 
+# class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
+#     model = Product
+#     form_class = ProductForm
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['image_formset'] = ProductImageFormSet()
+#         return context
+#
+#     def form_valid(self, form):
+#         self.object = form.save()
+#
+#         # Обработка множественных изображений
+#         image_formset = ProductImageFormSet(self.request.FILES)
+#         if image_formset.is_valid():
+#             for image_form in image_formset:
+#                 if image_form.cleaned_data:
+#                     ProductImage.objects.create(
+#                         product=self.object,
+#                         image=image_form.cleaned_data['image']
+#                     )
+#
+#         return redirect(self.success_url)
+
 class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
+    permission_required = "shop.change_product"
+    success_url = "/ru/shop/products/"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -123,6 +149,10 @@ class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView
                     )
 
         return redirect(self.success_url)
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
 
 
 class ShopIndexView(View):

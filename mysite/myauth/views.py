@@ -21,7 +21,7 @@ class HelloView(View):
         items_str = request.GET.get("items") or 0
         items = int(items_str)
         product_line = ngettext(
-            "one_product",
+            "one product",
             "{count} products",
             items,
         )
