@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-09 15:27+0000\n"
+"POT-Creation-Date: 2025-03-10 02:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,8 +41,6 @@ msgstr "Русский"
 
 #: shopapp/models.py:15 shopapp/templates/shopapp/products-details.html:6
 #: shopapp/templates/shopapp/products-details.html:10
-#, fuzzy
-#| msgid "Products"
 msgid "Product"
 msgstr "Товары"
 
@@ -73,12 +71,10 @@ msgid "Discount"
 msgstr "Скидка"
 
 #: shopapp/templates/shopapp/products-details.html:15
-#, fuzzy
 msgid "Archived"
-msgstr "Архивировано:"
+msgstr "Архивировано"
 
 #: shopapp/templates/shopapp/products-details.html:21
-#, fuzzy
 msgid "Images"
 msgstr "Изображение"
 
@@ -88,33 +84,39 @@ msgstr "Нет изображений"
 
 #: shopapp/templates/shopapp/products-details.html:33
 msgid "There is 1 image available."
-msgstr ""
+msgstr "Доступно 1 изображение"
 
 #: shopapp/templates/shopapp/products-details.html:35
-msgid "There are"
-msgstr ""
+msgid ""
+"\n"
+"          There is only one image\n"
+"          "
+msgid_plural ""
+"\n"
+"          There are %(images_count)s images available.\n"
+"        "
+msgstr[0] ""
+"\n"
+"        Доступен %(products_count)s товар.\n"
+"        "
+msgstr[1] ""
+"\n"
+"        Доступно %(products_count)s товара.\n"
+"        "
+msgstr[2] ""
+"\n"
+"        Доступно %(products_count)s товаров.\n"
+"        "
 
-#: shopapp/templates/shopapp/products-details.html:35
-msgid "images available."
-msgstr ""
-
-#: shopapp/templates/shopapp/products-details.html:41
-#, fuzzy
-#| msgid "one product"
-#| msgid_plural "{count} products"
+#: shopapp/templates/shopapp/products-details.html:46
 msgid "Update product"
 msgstr "Обновить товар"
 
-#: shopapp/templates/shopapp/products-details.html:44
-#, fuzzy
-#| msgid "one product"
-#| msgid_plural "{count} products"
+#: shopapp/templates/shopapp/products-details.html:49
 msgid "Archive product"
 msgstr "Архивировать товар"
 
-#: shopapp/templates/shopapp/products-details.html:47
-#, fuzzy
-#| msgid "Products list"
+#: shopapp/templates/shopapp/products-details.html:52
 msgid "Back to products list"
 msgstr "Вернуться к списку товаров"
 
@@ -159,7 +161,7 @@ msgid "Create a new product"
 msgstr "Создать новый товар"
 
 #: shopapp/templates/shopapp/products-list.html:43
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "      <h3>No products yet</h3>\n"
@@ -172,13 +174,3 @@ msgstr ""
 "      <a href=\"%(create_product_url)s\"\n"
 "      >Создать новый</a>\n"
 "    "
-
-#, fuzzy
-#~| msgid "Price"
-#~ msgid "Price:"
-#~ msgstr "Цена"
-
-#, fuzzy
-#~| msgid "Discount"
-#~ msgid "Discount:"
-#~ msgstr "Скидка"

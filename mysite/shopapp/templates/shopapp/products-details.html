@@ -32,7 +32,12 @@
       {% if product.images.count == 1 %}
         {% translate 'There is 1 image available.' %}
       {% else %}
-        {% translate 'There are' %} {{ product.images.count }} {% translate 'images available.' %}
+        {% blocktranslate count images_count=product.images.count %}
+          There is only one image
+          {% plural %}
+          There are {{ images_count }} images available.
+        {% endblocktranslate %}
+
       {% endif %}
 
     </div>

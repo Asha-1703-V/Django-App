@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-09 15:28+0000\n"
+"POT-Creation-Date: 2025-03-10 02:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,8 +39,6 @@ msgstr ""
 
 #: shopapp/models.py:15 shopapp/templates/shopapp/products-details.html:6
 #: shopapp/templates/shopapp/products-details.html:10
-#, fuzzy
-#| msgid "Products"
 msgid "Product"
 msgstr "Products"
 
@@ -71,9 +69,6 @@ msgid "Discount"
 msgstr "Discount"
 
 #: shopapp/templates/shopapp/products-details.html:15
-#, fuzzy
-#| msgid "one product"
-#| msgid_plural "{count} products"
 msgid "Archived"
 msgstr "One product"
 
@@ -90,30 +85,27 @@ msgid "There is 1 image available."
 msgstr ""
 
 #: shopapp/templates/shopapp/products-details.html:35
-msgid "There are"
-msgstr ""
+#, python-format
+msgid ""
+"\n"
+"          There is only one image\n"
+"          "
+msgid_plural ""
+"\n"
+"          There are %(images_count)s images available.\n"
+"        "
+msgstr[0] ""
+msgstr[1] ""
 
-#: shopapp/templates/shopapp/products-details.html:35
-msgid "images available."
-msgstr ""
-
-#: shopapp/templates/shopapp/products-details.html:41
-#, fuzzy
-#| msgid "one product"
-#| msgid_plural "{count} products"
+#: shopapp/templates/shopapp/products-details.html:46
 msgid "Update product"
 msgstr "One product"
 
-#: shopapp/templates/shopapp/products-details.html:44
-#, fuzzy
-#| msgid "one product"
-#| msgid_plural "{count} products"
+#: shopapp/templates/shopapp/products-details.html:49
 msgid "Archive product"
 msgstr "Archive product"
 
-#: shopapp/templates/shopapp/products-details.html:47
-#, fuzzy
-#| msgid "Products list"
+#: shopapp/templates/shopapp/products-details.html:52
 msgid "Back to products list"
 msgstr "Back to products list"
 
@@ -156,13 +148,3 @@ msgid ""
 "      >Create a new one</a>\n"
 "    "
 msgstr ""
-
-#, fuzzy
-#~| msgid "Price"
-#~ msgid "Price:"
-#~ msgstr "Price"
-
-#, fuzzy
-#~| msgid "Discount"
-#~ msgid "Discount:"
-#~ msgstr "Discount"
