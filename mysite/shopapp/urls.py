@@ -7,13 +7,14 @@ from .views import (
     OrdersListView, ProductsListView, OrderDetailView,
     ProductDetailsView, ProductCreateView, ProductUpdateView,
     ProductDeleteView, OrderCreateView, OrderUpdateView, OrderDeleteView, ProductsDataExportView,
-    OrdersExportView, ProductViewSet,
+    OrdersExportView, ProductViewSet, OrderViewSet
 )
 
 app_name = "shopapp"
 
 routers = DefaultRouter()
 routers.register("products", ProductViewSet)
+routers.register("orders", OrderViewSet)
 
 
 urlpatterns = [

@@ -15,12 +15,12 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .forms import GroupForm, OrderForm
 from .forms import ProductForm, ProductImageFormSet
 from .models import Product, Order, ProductImage
-from .serializers import ProductSerializers
+from .serializers import ProductSerializer, OrderSerializer
 
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializers
+    serializer_class = ProductSerializer
     filter_backends = [
         SearchFilter,
         DjangoFilterBackend,
@@ -40,6 +40,22 @@ class ProductViewSet(ModelViewSet):
         "discount",
     ]
 
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter
+    ]
+    filterset_fields = [
+        "user",
+        "delivery_address",
+        "promocode",
+    ]
+    ordering_fields = [
+        "id",
+        "user",
+    ]
 
 class OrdersExportView(UserPassesTestMixin, View):
     def test_func(self):
