@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список статей</title>
+</head>
+<body>
+    <h1>Список статей</h1>
+    <ul>
+        {% for article in object_list %}
+            <li>
+                <h2>{{ article.title }}</h2>
+                <p>Дата публикации: {{ article.pub_date }}</p>
+                <p>Автор: {{ article.author.name }}</p>
+                <p>Категория: {{ article.category.name }}</p>
+                <p>Теги:
+                    {% for tag in article.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
