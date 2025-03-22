@@ -98,50 +98,6 @@ class OrdersExportView(UserPassesTestMixin, View):
         ]
         return JsonResponse({"orders": orders_data})
 
-# class ProductCreateView(PermissionRequiredMixin, CreateView):
-#
-#     permission_required = ["shopapp.add_product"]
-#
-#     model = Product
-#     fields = 'name', 'price', 'description', 'discount'
-#     success_url = reverse_lazy('shopapp:products_list')
-#
-#     def form_valid(self, form):
-#         form.instance.created_by = self.request.user
-#         return super().form_valid(form)
-
-# class ProductCreateView(CreateView):
-#     model = Product
-#     fields = 'name', 'price', 'description', 'discount', "preview"
-#     success_url = reverse_lazy('shopapp:products_list')
-#
-# from django.contrib.auth.mixins import UserPassesTestMixin
-#
-# class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
-#     model = Product
-#     # fields = 'name', 'price', 'description', 'discount', "preview"
-#     permission_required = 'shopapp.change_product'
-#     form_class = ProductForm
-#
-#     def test_func(self):
-#         return self.request.user.is_superuser or self.get_object().created_by == self.request.user
-#
-#     def get_success_url(self):
-#         return reverse(
-#             "shopapp:product_details",
-#             kwargs={"pk": self.object.pk},
-#         )
-#
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         for image in form.files.getlist("images"):
-#             ProductImage.objects.create(
-#                 product=self.objects,
-#                 image=image,
-#             )
-#
-#         return response
-
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
@@ -166,30 +122,6 @@ class ProductCreateView(CreateView):
 
         return redirect(self.success_url)
 
-
-# class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
-#     model = Product
-#     form_class = ProductForm
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['image_formset'] = ProductImageFormSet()
-#         return context
-#
-#     def form_valid(self, form):
-#         self.object = form.save()
-#
-#         # Обработка множественных изображений
-#         image_formset = ProductImageFormSet(self.request.FILES)
-#         if image_formset.is_valid():
-#             for image_form in image_formset:
-#                 if image_form.cleaned_data:
-#                     ProductImage.objects.create(
-#                         product=self.object,
-#                         image=image_form.cleaned_data['image']
-#                     )
-#
-#         return redirect(self.success_url)
 
 class ProductUpdateView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
@@ -281,6 +213,7 @@ class OrdersListView(LoginRequiredMixin, ListView):
         Order.objects
         .select_related("user")
         .prefetch_related("products")
+        .all()
     )
     template_name = "shopapp/orders_list.html"
     context_object_name = "orders"
