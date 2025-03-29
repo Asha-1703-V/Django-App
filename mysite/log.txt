@@ -1,0 +1,13 @@
+2025-03-29 10:33:20,855 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/mysite/settings.py changed, reloading.
+2025-03-29 10:33:21,191 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-29 10:39:42,538 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/mysite/settings.py changed, reloading.
+2025-03-29 10:39:43,590 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-29 10:40:34,808 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-29 10:42:13,703 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/mysite/settings.py changed, reloading.
+2025-03-29 10:42:14,173 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-29 12:26:36,740 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-29 12:27:01,720 [WARNING] django.request: Not Found: /favicon.ico
+2025-03-29 12:28:42,068 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/views.py changed, reloading.
+2025-03-29 12:28:42,589 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-29 12:29:27,738 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/views.py changed, reloading.
+2025-03-29 12:29:28,628 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
