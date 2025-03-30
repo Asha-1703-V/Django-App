@@ -1,0 +1,9 @@
+name,description,price,discount
+Desktop (new),it's new very smart,2599.00,15
+Laptop,Lorem ipsum dolor sit amet,1999.00,0
+Laptop 14,A new one,2299.00,5
+Laptop 16,A bigger one,2699.00,7
+Smartphone,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",987.00,10
+Smartphone 1,,199.00,10
+Smartphone 2,,299.00,10
+Smartphone 3,,399.00,10
