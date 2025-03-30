@@ -4,6 +4,9 @@ from .models import Order, ProductImage
 from django import forms
 from shopapp.models import Product
 
+class OrderImportForm(forms.Form):
+    file = forms.FileField()
+
 class ProductForm(forms.ModelForm):
     images = forms.FileField(
         required=False
@@ -37,3 +40,7 @@ class OrderForm(ModelForm):
         widgets = {
             'products': CheckboxSelectMultiple(),
         }
+
+
+class CSVImportForm(forms.Form):
+    csv_file =  forms.FileField()

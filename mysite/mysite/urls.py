@@ -22,6 +22,9 @@ from django.conf.urls.i18n import i18n_patterns
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import sitemaps
+
 urlpatterns = [
     path('api/', include('myapiapp.urls')),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
@@ -29,6 +32,13 @@ urlpatterns = [
     path('api/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('blog/', include('blogapp.urls')),
+
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
 ]
 
 urlpatterns += i18n_patterns(
