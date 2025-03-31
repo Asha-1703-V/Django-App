@@ -968,3 +968,29 @@ django.urls.exceptions.NoReverseMatch: Reverse for 'product' not found. 'product
 2025-03-30 12:21:42,881 [WARNING] django.request: Not Found: /favicon.ico
 2025-03-30 12:23:56,046 [WARNING] django.request: Not Found: /favicon.ico
 2025-03-30 12:24:26,096 [WARNING] django.request: Not Found: /products
+2025-03-31 01:39:18,006 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 01:39:38,747 [INFO] shopapp.views: Rendering shop index
+2025-03-31 01:39:39,089 [WARNING] django.request: Not Found: /favicon.ico
+2025-03-31 01:51:30,388 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 01:51:51,707 [WARNING] django.request: Not Found: /myauth/cookie/get/
+2025-03-31 01:51:51,958 [WARNING] django.request: Not Found: /favicon.ico
+2025-03-31 01:55:06,688 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/myauth/views.py changed, reloading.
+2025-03-31 01:55:07,199 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 01:57:18,060 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/urls.py changed, reloading.
+2025-03-31 01:57:18,386 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 01:57:33,335 [INFO] shopapp.views: Rendering shop index
+2025-03-31 02:02:21,425 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/views.py changed, reloading.
+2025-03-31 02:02:22,296 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 02:02:25,681 [INFO] shopapp.views: Rendering shop index
+2025-03-31 02:04:23,946 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/views.py changed, reloading.
+2025-03-31 02:04:24,605 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 02:08:54,966 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/views.py changed, reloading.
+2025-03-31 02:08:55,641 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 02:09:11,527 [INFO] shopapp.views: Rendering shop index
+2025-03-31 02:09:12,482 [INFO] shopapp.views: Rendering shop index
+2025-03-31 02:09:13,503 [INFO] shopapp.views: Rendering shop index
+2025-03-31 02:15:13,729 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 02:23:24,271 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/shopapp/views.py changed, reloading.
+2025-03-31 02:23:25,024 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+2025-03-31 02:27:03,190 [INFO] django.utils.autoreload: /home/asha/PycharmProjects/python_django/mysite/mysite/settings.py changed, reloading.
+2025-03-31 02:27:04,543 [INFO] django.utils.autoreload: Watching for file changes with StatReloader
