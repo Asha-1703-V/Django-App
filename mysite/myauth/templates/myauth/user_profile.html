@@ -1,0 +1,25 @@
+{% extends 'myauth/base.html' %}
+
+{% block body %}
+    <h1>{{ user.username }}</h1>
+
+    {% if user_profile and user_profile.avatar %}
+        <img src="{{ user_profile.avatar.url }}" alt="Avatar">
+    {% elif user_profile %}
+        <p>Аватарка не установлена</p>
+    {% else %}
+        <p>Профиль не найден</p>
+    {% endif %}
+
+    {% if user_profile %}
+        <p>Bio: {{ user_profile.bio }}</p>
+        <p>Username: {{ user.username }}</p>
+        <p>First name: {{ user.first_name }}</p>
+        <p>Last name: {{ user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
+    {% endif %}
+
+    {% if request.user.is_staff or request.user == user %}
+        <a href="{% url 'myauth:update_user_avatar' user.profile.pk %}">Обновить аватарку</a>
+    {% endif %}
+{% endblock %}

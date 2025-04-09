@@ -1,0 +1,22 @@
+{% extends 'myauth/base.html' %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{% block body %}
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Login</button>
+  </form>
+
+  <p><a href="{% url 'myauth:register' %}">Register</a></p>
+
+  {% if request.user.is_authenticated %}
+    <p><a href="{% url 'myauth:about-me' %}">About me</a></p>
+  {% endif %}
+
+{% endblock %}
