@@ -6,7 +6,7 @@ services:
       dockerfile: ./Dockerfile
     command:
     - gunicorn
-    - mysite.mysite.wsgi:application
+    - mysite.wsgi:application
     - --bind
     - 0.0.0.0:8000
     ports:
